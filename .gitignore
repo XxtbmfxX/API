@@ -1,0 +1,33 @@
+*.json
+# Entorno virtual
+venv/
+.env/
+.envrc
+
+# Archivos de configuración de entorno
+*.env
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Archivos de log
+*.log
+
+# Base de datos SQLite (si usas)
+*.sqlite3
+
+# VSCode config
+.vscode/
+
+# Archivos de tests temporales
+htmlcov/
+.coverage
+
+# Compilados
+*.so
+
+# Otros
+.DS_Store
