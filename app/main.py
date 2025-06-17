@@ -1,23 +1,19 @@
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
-import gspread
-from google.oauth2.service_account import Credentials
-from datetime import datetime
 import logging
+import os
 
-
-from google_sheets_db import GoogleSheet
-from datetime import date, datetime
+from .google_sheets_db import GoogleSheet  # <-- Cambio aquí
+from datetime import datetime
 import uuid
 
-file_name_gs = "informaticaxrobotica-credenciales.json"
+# Cambia la ruta aquí
+file_name_gs = os.path.join(os.path.dirname(__file__), "credenciales.json")
 google_sheet = "RegistroAccesos"
 sheet_name = "Sheet1"
 
-# Configuración de credenciales y alcance
 google = GoogleSheet(file_name_gs, google_sheet, sheet_name)
-
 
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
@@ -86,6 +82,12 @@ def registro_acceso(request: RegistroRequest):
 
 
 @app.get("/")
+def read_root():
+    return {"message": "API de Registro de Accesos en Google Sheets"}
+
+
+# Si quieres testear desde localhost:8000
+# uvicorn main:app --reload
 def read_root():
     return {"message": "API de Registro de Accesos en Google Sheets"}
 

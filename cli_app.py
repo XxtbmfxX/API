@@ -2,7 +2,7 @@ from google_sheets_db import GoogleSheet
 from datetime import date
 import uuid
 
-file_name_gs = "informaticaxrobotica-credenciales.json"
+file_name_gs = "credenciales.json"
 google_sheet = "RegistroAccesos"
 sheet_name = "Sheet1"
 
@@ -24,6 +24,6 @@ uid = generate_uid()
 google = GoogleSheet(file_name_gs, google_sheet, sheet_name)
 
 date = date.today()
-value = [[uid, "test", "test", "test"]]
+value = [[uid, "test", "test"]]
 range = google.get_last_row_range()
 google.write_data(range, value)
