@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+*.sqlite3
+
+# VSCode
+.vscode/
+
+# Git
+.git
+.gitignore
+
+# Credenciales y variables de entorno
+*.json
+!.env
+!app/credenciales.json
+
+# Otros
+.DS_Store
+*.log
