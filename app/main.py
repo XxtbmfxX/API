@@ -3,13 +3,26 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import logging
 import os
+from dotenv import load_dotenv
 
 from .google_sheets_db import GoogleSheet  # <-- Cambio aquí
 from datetime import datetime
-import uuid
 
-# Cambia la ruta aquí
-file_name_gs = os.path.join(os.path.dirname(__file__), "credenciales.json")
+# Cargar variables de entorno desde .env
+load_dotenv()
+
+# Obtener la ruta del archivo de credenciales desde la variable de entorno
+file_name_gs = os.getenv("GOOGLE_CREDENTIALS")
+if not file_name_gs:
+    raise RuntimeError("No se encontró la variable GOOGLE_CREDENTIALS en el .env")
+
+
+# Si la ruta es relativa, hazla absoluta
+if not os.path.isabs(file_name_gs):
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file_name_gs = os.path.join(current_dir, file_name_gs)
+
+
 google_sheet = "RegistroAccesos"
 sheet_name = "Sheet1"
 
