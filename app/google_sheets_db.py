@@ -1,21 +1,26 @@
+import os
 import gspread
+from google.auth import default
+from google.oauth2.service_account import Credentials as SACredentials
+from googleapiclient.discovery import build
 import pandas as pd
 
-from google.auth import default
-from googleapiclient.discovery import build
-
-
 class GoogleSheet:
-    def __init__(self, cred_path, sheet_id, sheet_name):
-        if cred_path:
-            creds = service_account.Credentials.from_service_account_file(
-                cred_path, scopes=[...]
+    def __init__(self, file_name, document, sheet_name):
+        # Si me pasaron ruta de JSON (local dev), úsala:
+        if file_name:
+            creds = SACredentials.from_service_account_file(
+                file_name,
+                scopes=["https://www.googleapis.com/auth/spreadsheets"]
             )
+            self.gc = gspread.authorize(creds)
         else:
+            # En producción: Application Default Credentials
             creds, _ = default(scopes=["https://www.googleapis.com/auth/spreadsheets"])
-        self.service = build("sheets", "v4", credentials=creds)
-        self.sheet = sheet_id
-        self.sheet_name = sheet_name
+            self.gc = gspread.authorize(creds)
+
+        self.sh = self.gc.open(document)
+        self.sheet = self.sh.worksheet(sheet_name)
 
     def read_data(
         self, range
