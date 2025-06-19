@@ -2,32 +2,27 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import logging
-import os
-from dotenv import load_dotenv
 
-from .google_sheets_db import GoogleSheet  # <-- Cambio aquí
+# lectura de variables de entorno
+# para desarrollo local (no en Cloud Run)
+import os
+from .google_sheets_db import GoogleSheet
 from datetime import datetime
 
-# Cargar variables de entorno desde .env
-load_dotenv()
+# Cargar .env local solo si ENV=development
+if os.getenv("ENV") == "development":
+    from dotenv import load_dotenv
+    load_dotenv()
 
-# Obtener la ruta del archivo de credenciales desde la variable de entorno
-file_name_gs = os.getenv("GOOGLE_CREDENTIALS")
-if not file_name_gs:
-    raise RuntimeError("No se encontró la variable GOOGLE_CREDENTIALS en el .env")
-
-
-# Si la ruta es relativa, hazla absoluta
-if not os.path.isabs(file_name_gs):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    file_name_gs = os.path.join(current_dir, file_name_gs)
+google = GoogleSheet(
+    None,  
+    os.getenv("GOOGLE_SHEET_ID", "RegistroAccesos"),
+    os.getenv("SHEET_NAME", "Sheet1")
+)
 
 
-google_sheet = "RegistroAccesos"
-sheet_name = "Sheet1"
 
-google = GoogleSheet(file_name_gs, google_sheet, sheet_name)
-
+# Configuración de FastAPI
 app = FastAPI()
 logging.basicConfig(level=logging.INFO)
 
@@ -95,12 +90,6 @@ def registro_acceso(request: RegistroRequest):
 
 
 @app.get("/")
-def read_root():
-    return {"message": "API de Registro de Accesos en Google Sheets"}
-
-
-# Si quieres testear desde localhost:8000
-# uvicorn main:app --reload
 def read_root():
     return {"message": "API de Registro de Accesos en Google Sheets"}
 

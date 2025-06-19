@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: fastapi-sheets
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    secretFiles:
+      - filePath: /etc/secrets/credenciales.json
+        envVar: GOOGLE_CREDENTIALS
